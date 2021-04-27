@@ -86,7 +86,7 @@ user_nsp.on('connection', (socket) => {
   const user_channel = socket.nsp; // newNamespace.name === '/usr_123456
   let handshake = socket.handshake;
   console.log("\n============================================================================================>");
-  // Add client to server client list -------
+  // Add client to socket client list -------
   let uData = { clientId: handshake.auth.clientId, channel: handshake.auth.channel, type: handshake.auth.type };
   usrClients.push(uData);
   // ----------------------------------------
@@ -97,6 +97,8 @@ user_nsp.on('connection', (socket) => {
     let client = usrClients[usrClients.indexOf(uData)]
     console.log("\n============================================================================================>");
     console.log("\n[*] USER DISCONNECTED FROM SOCKET: "+client.room);
+
+    usrClients.splice(usrClients.indexOf(uData), 1); // Remove client from client list
 
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: `[-] USER SOCKET [${socket.id}] DISCONNECTED`}); // send message direct to the admin namespace
     admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{USERS} =>'+JSON.stringify(usrClients)});
@@ -111,6 +113,10 @@ user_nsp.on('connection', (socket) => {
   // GET DEVICE KEY
   const cookies = cookie.parse(socket.request.headers.cookie || '');
   const device_key = (cookies.dKEY || '');
+
+
+  // SEND CONNECTION FEEDBACK
+  user_nsp.emit(uData.channel, 'successfully connected to JDS websocket server!');
 
 
   // SOCKET EVENT PROCESSING
