@@ -77,8 +77,14 @@
       $(function () {
         const admin_socket = io('/su_'+UUID, { reconnectionDelayMax: 10000, auth: { token: suKEY }, forceNew: true });
         const python_socket = io('/py_'+UUID, { reconnectionDelayMax: 10000, auth: { token: pyKEY, uid: 'administrator', gc: 'administrator'  } });
-        const user_socket = io('/usr_'+UUID, { reconnectionDelayMax: 10000, auth: { token: usrKEY }, forceNew: true });
 
+
+        const userchannelID = rand(100000000000, 999999999999); // USER UNIQUE CHANNEL ID
+        const user_socket = io('/usr_'+UUID, {
+          reconnectionDelayMax: 10000,
+          auth: { token: usrKEY, channel: userchannelID, clientId: UUID, type: 'admin' },
+          forceNew: true
+        });
 
         // ADMIN -------------------------------------------------------------->
         admin_socket.on('msg', (data) => {
