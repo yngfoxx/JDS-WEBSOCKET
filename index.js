@@ -101,7 +101,7 @@ user_nsp.on('connection', (socket) => {
     delete usrClients[handshake.auth.clientId]; // Remove client from client list
 
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: `[-] USER SOCKET [${socket.id}] DISCONNECTED`}); // send message direct to the admin namespace
-    admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{USERS} =>'+JSON.stringify(usrClients)});
+    admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{USERS} =>'+JSON.stringify(usrClients)} );
   });
   // -------------------------------------------------------------------------->
 
@@ -128,8 +128,19 @@ user_nsp.on('connection', (socket) => {
 
   // CLIENT DESKTOP PROCESSING
   socket.on('client_app_msg', (data) => {
-    user_channel.emit(uData.channel, data); // send message direct to the namespace
-    admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: {auth: handshake.auth, payload: data}}); // send message direct to the namespace
+    if (data.hasOwnProperty('type')) {
+      switch (data.type) {
+        case 'realtime_download_progress':
+          user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
+          admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data.payload});
+          break;
+
+        default:
+          user_channel.emit(uData.channel, data); // send message direct to the namespace
+          admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: {auth: handshake.auth, payload: data}}); // send message direct to the namespace
+          break;
+      }
+    }
   });
   // -------------------------------------------------------------------------->
 });
