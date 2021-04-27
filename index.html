@@ -95,7 +95,7 @@
                   let parentDivAdmin = document.querySelector('._su_pane');
                   let newDivAdmin = document.createElement('div');
                       newDivAdmin.setAttribute('class', 'skt_msg');
-                      newDivAdmin.innerText = "// "+JSON.stringify(data.socket_data) + " // => [Admin NSP]";
+                      newDivAdmin.innerText = "// "+JSON.stringify(data.socket_data) + " // => [ADMIN][Admin NSP]";
                   parentDivAdmin.append(newDivAdmin);
                   break;
 
@@ -103,7 +103,7 @@
                   let parentDivUser = document.querySelector('._usr_pane');
                   let newDivUser = document.createElement('div');
                       newDivUser.setAttribute('class', 'skt_msg');
-                      newDivUser.innerText = "// "+JSON.stringify(data.socket_data) + " // => [Admin NSP]";
+                      newDivUser.innerText = "// "+JSON.stringify(data.socket_data) + " // => [USR][Admin NSP]";
                   parentDivUser.append(newDivUser);
                   break;
 
@@ -111,7 +111,7 @@
                     let parentDivPython = document.querySelector('._pyt_pane');
                     let newDivPython = document.createElement('div');
                         newDivPython.setAttribute('class', 'skt_msg');
-                        newDivPython.innerText = "// "+JSON.stringify(data.socket_data) + " // => [Admin NSP]";
+                        newDivPython.innerText = "// "+JSON.stringify(data.socket_data) + " // => [PY][Admin NSP]";
                     parentDivPython.append(newDivPython);
                     break;
 
