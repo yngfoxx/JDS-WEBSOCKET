@@ -121,7 +121,7 @@ user_nsp.on('connection', (socket) => {
 
   // SOCKET EVENT PROCESSING
   socket.on('msg', (data) => {
-    user_channel.emit('msg', data); // send message direct to the namespace
+    // user_channel.emit('msg', data); // send message direct to the namespace
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data}); // send message direct to the admin namespace
   });
 
