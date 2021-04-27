@@ -121,7 +121,6 @@ user_nsp.on('connection', (socket) => {
 
   // SOCKET EVENT PROCESSING
   socket.on('msg', (data) => {
-    // Identify sender
     user_channel.emit('msg', data); // send message direct to the namespace
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data}); // send message direct to the admin namespace
   });
@@ -129,7 +128,7 @@ user_nsp.on('connection', (socket) => {
 
   // CLIENT DESKTOP PROCESSING
   socket.on('client_app_msg', (data) => {
-    // Identify sender
+    user_channel.emit(uData.channel, data); // send message direct to the namespace
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: {auth: handshake.auth, payload: data}}); // send message direct to the namespace
   });
   // -------------------------------------------------------------------------->
