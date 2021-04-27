@@ -73,7 +73,7 @@ admin_server_nsp.on('connection', (socket) => {
 
 
 // USER SOCKET NAMESPACE/CHANNEL >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\/
-let usrClients = []; // server client list
+let usrClients = {}; // server client list
 
 user_nsp.use((socket, next) => { // Authenticate admin channel
   let handshake = socket.handshake;
@@ -87,18 +87,18 @@ user_nsp.on('connection', (socket) => {
   let handshake = socket.handshake;
   console.log("\n============================================================================================>");
   // Add client to socket client list -------
-  let uData = { clientId: handshake.auth.clientId, channel: handshake.auth.channel, type: handshake.auth.type };
-  usrClients.push(uData);
+  let uData = {channel: handshake.auth.channel, type: handshake.auth.type };
+  usrClients[handshake.auth.clientId] = uData;
   // ----------------------------------------
 
   // SOCKET ON DISCONNECT EVENT ----------------------------------------------->
   socket.on('disconnect', () => {
     socket.leave(handshake.auth.channel);
-    let client = usrClients[usrClients.indexOf(uData)]
+    let client = usrClients[handshake.auth.clientId];
     console.log("\n============================================================================================>");
     console.log("\n[*] USER DISCONNECTED FROM SOCKET: "+client.room);
 
-    usrClients.splice(usrClients.indexOf(uData), 1); // Remove client from client list
+    delete usrClients[handshake.auth.clientId]; // Remove client from client list
 
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: `[-] USER SOCKET [${socket.id}] DISCONNECTED`}); // send message direct to the admin namespace
     admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{USERS} =>'+JSON.stringify(usrClients)});
@@ -116,11 +116,19 @@ user_nsp.on('connection', (socket) => {
 
 
   // SEND CONNECTION FEEDBACK
-  user_nsp.emit(uData.channel, '[+] successfully connected to JDS websocket server!');
+  user_nsp.emit(uData.channel, {msg: '[+] successfully connected to JDS websocket server!'});
 
 
   // SOCKET EVENT PROCESSING
   socket.on('msg', (data) => {
+    // Identify sender
+    user_channel.emit('msg', {auth: handshake.auth, payload: data}); // send message direct to the namespace
+    admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data}); // send message direct to the admin namespace
+  });
+
+
+  // CLIENT DESKTOP PROCESSING
+  socket.on('client_app_msg', (data) => {
     // Identify sender
     user_channel.emit('msg', data); // send message direct to the namespace
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data}); // send message direct to the admin namespace
