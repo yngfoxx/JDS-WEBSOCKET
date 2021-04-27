@@ -190,7 +190,7 @@ python_server_nsp.on('connection', (socket) => {
     }
 
     admin_server_nsp.emit('msg', {socket_type: 'python', socket_data: `[-] PYTHON SOCKET [${socket.id}] DISCONNECTED`}); // send message direct to the admin namespace
-    admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{USERS} =>'+JSON.stringify(pyClients)});
+    admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{PY_USERS} =>'+JSON.stringify(pyClients)});
   });
   // -------------------------------------------------------------------------->
 
@@ -198,7 +198,7 @@ python_server_nsp.on('connection', (socket) => {
   // USER CONNECTED ----------------------------------------------------------->
   // python_server_nsp.to(socketGC).emit('msg', 'Welcome to Joint Downloading System'); // send status of all users in the channel
   admin_server_nsp.emit('msg', {socket_type: 'python', socket_data: `[+] PYTHON SOCKET [${socket.id}] CONNECTED`}); // send message direct to the admin namespace
-  admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{USERS} =>'+JSON.stringify(pyClients)}); // Notify admin
+  admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: '{PY_USERS} =>'+JSON.stringify(pyClients)}); // Notify admin
 
   // SOCKET { EVENT } PROCESSING
   socket.on('event', (data) => { // File download event
