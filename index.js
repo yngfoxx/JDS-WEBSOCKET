@@ -116,12 +116,13 @@ user_nsp.on('connection', (socket) => {
 
 
   // SEND CONNECTION FEEDBACK
-  user_nsp.emit(uData.channel, 'successfully connected to JDS websocket server!');
+  user_nsp.emit(uData.channel, '[+] successfully connected to JDS websocket server!');
 
 
   // SOCKET EVENT PROCESSING
   socket.on('msg', (data) => {
-    user_nsp.to(user_channel).emit('msg', data); // send message direct to the namespace
+    // Identify sender
+    user_channel.emit('msg', data); // send message direct to the namespace
     admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data}); // send message direct to the admin namespace
   });
   // -------------------------------------------------------------------------->
