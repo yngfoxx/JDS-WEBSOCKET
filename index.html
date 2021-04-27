@@ -96,7 +96,7 @@
                   let newDivAdmin = document.createElement('div');
                       newDivAdmin.setAttribute('class', 'skt_msg');
                       newDivAdmin.innerText = "// "+JSON.stringify(data.socket_data) + " // => [ADMIN][Admin NSP]";
-                  parentDivAdmin.append(newDivAdmin);
+                  parentDivAdmin.prepend(newDivAdmin);
                   break;
 
                 case 'user':
@@ -104,7 +104,7 @@
                   let newDivUser = document.createElement('div');
                       newDivUser.setAttribute('class', 'skt_msg');
                       newDivUser.innerText = "// "+JSON.stringify(data.socket_data) + " // => [USR][Admin NSP]";
-                  parentDivUser.append(newDivUser);
+                  parentDivUser.prepend(newDivUser);
                   break;
 
                 case 'python':
@@ -112,7 +112,7 @@
                     let newDivPython = document.createElement('div');
                         newDivPython.setAttribute('class', 'skt_msg');
                         newDivPython.innerText = "// "+JSON.stringify(data.socket_data) + " // => [PY][Admin NSP]";
-                    parentDivPython.append(newDivPython);
+                    parentDivPython.prepend(newDivPython);
                     break;
 
                 default:
@@ -136,7 +136,7 @@
             let newDiv = document.createElement('div');
                 newDiv.setAttribute('class', 'skt_msg');
                 newDiv.innerText = JSON.stringify(msg);
-            parentDiv.append(newDiv);
+            parentDiv.prepend(newDiv);
           }
         });
         // -------------------------------------------------------------------->
@@ -149,7 +149,7 @@
             let newDiv = document.createElement('div');
                 newDiv.setAttribute('class', 'skt_msg');
                 newDiv.innerText = JSON.stringify(data);
-            parentDiv.append(newDiv);
+            parentDiv.prepend(newDiv);
           }
         });
         // -------------------------------------------------------------------->
