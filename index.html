@@ -1,0 +1,153 @@
+<!doctype html>
+<html>
+  <head>
+    <style rel="stylesheet/less">
+      html { background-color: #151515; color: white; }
+      .skt_pane {
+      	background-color: black;
+      	padding: 8px;
+      	border-radius: 7px;
+        margin-bottom: 7px;
+      }
+      .skt_msg_pane {
+      	list-style: none;
+      	background-color: black;
+      	font-size: 12px;
+      	padding: 9px;
+        width: -moz-available;
+      	width: -webkit-fill-available;
+        border-radius: 5px;
+        height: 400px;
+        position: relative;
+        overflow: auto;
+      }
+      .skt_mp_title {
+      	font-size: 14px;
+      	font-family: sans-serif;
+      	text-align: center;
+      	background-color: #151515;
+      	padding: 9px;
+      }
+      .skt_msg {
+      	color: #1aee1a;
+      	margin-top: 10px;
+      	border-bottom: 1px solid;
+      	padding-bottom: 6px;
+        word-wrap: anywhere;
+      }
+    </style>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+    <script src="https://cdn.socket.io/socket.io-3.0.1.min.js"></script>
+
+    <script type="text/javascript">less = { javascriptEnabled: true };</script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/less.js/3.9.0/less.min.js" ></script>
+    <script src="//cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js" ></script>
+    <script src="//unpkg.com/swiper/swiper-bundle.min.js"></script>
+    <script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+    <title>JDS EUROPE SERVER</title>
+  </head>
+  <body>
+    <div class="skt_pane" data-pane="su">
+      <div class="skt_mp_title">Admin socket activity</div>
+      <div class="skt_msg_pane _su_pane"></div>
+    </div>
+    <div class="skt_pane" data-pane="py-1247">
+      <div class="skt_mp_title">Python downloads</div>
+      <div class="skt_msg_pane _pyt_pane"></div>
+    </div>
+    <div class="skt_pane" data-pane="usr">
+      <div class="skt_mp_title">Users socket activity</div>
+      <div class="skt_msg_pane _usr_pane"></div>
+    </div>
+    <!-- <script src="/socket.io/socket.io.js"></script> -->
+    <script>
+      const suKEY = 'FMZur70PbXcT7dYOFdOuzjSpC4xdduMD';
+      const usrKEY = 'Aj6dN8WfWbPq1HdnHJFXwsXV7MDRrCCU';
+      const pyKEY = 'qPyFMKAdjtfL3Gq5pk2xDgy0SKMpEmLz';
+
+      function rand(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+      const UUID = rand(1000000000, 9999999999);
+      const manager = io('/', {
+        reconnectionDelayMax: 10000,
+        query: { uChannel: UUID }
+      });
+
+      $(function () {
+        const admin_socket = io('/su_'+UUID, { reconnectionDelayMax: 10000, auth: { token: suKEY }, forceNew: true });
+        const python_socket = io('/py_'+UUID, { reconnectionDelayMax: 10000, auth: { token: pyKEY, uid: 'administrator', gc: 'administrator'  } });
+        const user_socket = io('/usr_'+UUID, { reconnectionDelayMax: 10000, auth: { token: usrKEY }, forceNew: true });
+
+
+        // ADMIN -------------------------------------------------------------->
+        admin_socket.on('msg', (data) => {
+          // onReceive socket message
+           if (data != null) {
+              switch (data.socket_type) {
+                case 'admin':
+                  let parentDivAdmin = document.querySelector('._su_pane');
+                  let newDivAdmin = document.createElement('div');
+                      newDivAdmin.setAttribute('class', 'skt_msg');
+                      newDivAdmin.innerText = "// "+JSON.stringify(data.socket_data) + " // => [Admin NSP]";
+                  parentDivAdmin.append(newDivAdmin);
+                  break;
+
+                case 'user':
+                  let parentDivUser = document.querySelector('._usr_pane');
+                  let newDivUser = document.createElement('div');
+                      newDivUser.setAttribute('class', 'skt_msg');
+                      newDivUser.innerText = "// "+JSON.stringify(data.socket_data) + " // => [Admin NSP]";
+                  parentDivUser.append(newDivUser);
+                  break;
+
+                case 'python':
+                    let parentDivPython = document.querySelector('._pyt_pane');
+                    let newDivPython = document.createElement('div');
+                        newDivPython.setAttribute('class', 'skt_msg');
+                        newDivPython.innerText = "// "+JSON.stringify(data.socket_data) + " // => [Admin NSP]";
+                    parentDivPython.append(newDivPython);
+                    break;
+
+                default:
+                    break;
+              }
+           }
+        });
+        admin_socket.on("connect_error", err => {
+          if (err instanceof Error) {
+            console.error(err.message); // not authorized
+            console.log(err.data); // { content: "Please retry later" }
+          }
+        });
+        // -------------------------------------------------------------------->
+
+
+        // PYTHON ------------------------------------------------------------->
+        python_socket.on('msg', (msg) => { // onReceive socket message
+          if (msg != null) {
+            let parentDiv = document.querySelector('._pyt_pane');
+            let newDiv = document.createElement('div');
+                newDiv.setAttribute('class', 'skt_msg');
+                newDiv.innerText = JSON.stringify(msg);
+            parentDiv.append(newDiv);
+          }
+        });
+        // -------------------------------------------------------------------->
+
+
+        // ALL USERS ---------------------------------------------------------->
+        user_socket.on('msg', (data) => {
+          if (data != null) {
+            let parentDiv = document.querySelector('._usr_pane');
+            let newDiv = document.createElement('div');
+                newDiv.setAttribute('class', 'skt_msg');
+                newDiv.innerText = JSON.stringify(data);
+            parentDiv.append(newDiv);
+          }
+        });
+        // -------------------------------------------------------------------->
+      });
+    </script>
+  </body>
+</html>
