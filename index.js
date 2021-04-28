@@ -152,6 +152,7 @@ user_nsp.on('connection', (socket) => {
               pLoad['chunkOID'] = data.payload['OID'];
               pLoad['chunkCID'] = data.payload['CID'];
               pLoad['chunkJID'] = data.payload['JID'];
+              pLoad['chunkRID'] = data.payload['RID'];
               pLoad['userID'] = data.payload['UID'];
               pLoad['chunkSIZE'] = data.payload['SIZE'];
               pLoad['chunkPROGRESS'] = data.payload['PROG'];
