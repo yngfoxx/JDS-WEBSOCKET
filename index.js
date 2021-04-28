@@ -158,7 +158,7 @@ user_nsp.on('connection', (socket) => {
               pLoad['chunkPROGRESS'] = data.payload['PROG'];
               pLoad['chunkTIME'] = data.payload['TELAPSED'];
 
-          request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php?',
+          request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php?rtDownloadProg=true',
           function(err, httpResponse, body){
             if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "ERROR => "+err});
             admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+JSON.stringify(httpResponse)});
