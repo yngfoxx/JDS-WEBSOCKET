@@ -151,10 +151,10 @@ user_nsp.on('connection', (socket) => {
             },
             function optionalCallback(err, httpResponse, body) {
               if (err) {
-                admin_server_nsp.emit('msg', 'upload failed: '+err);
+                admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: 'upload failed: '+err});
                 return console.error('upload failed:', err);
               }
-              admin_server_nsp.emit('msg', 'Upload successful!  Server responded with: '+body);
+              admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: 'Upload successful!  Server responded with: '+body});
           });
 
           user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
