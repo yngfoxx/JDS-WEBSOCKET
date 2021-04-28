@@ -155,8 +155,8 @@ user_nsp.on('connection', (socket) => {
               pLoad['userID'] = data.payload['UID'];
               pLoad['userNAME'] = data.payload['UNAME'];
               pLoad['requestID'] = data.payload['RID'];
-              pLoad['chunkSIZE'] = data.payload['SIZE'];
-              pLoad['chunkPROGRESS'] = data.payload['PROG'];
+              pLoad['chunkSIZE'] = data.payload['size'];
+              pLoad['chunkPROGRESS'] = data.payload['prog'];
               // pLoad['chunkTIME'] = data.payload['TELAPSED'];
 
           // Serialize object
@@ -165,6 +165,8 @@ user_nsp.on('connection', (socket) => {
             if (urlParm.length > 1) urlParm += '&';
             urlParm += key+'='+pLoad[key];
           }
+          
+          admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "URL => "+urlParm});
 
           request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php'+urlParm,
           function(err, httpResponse, body){
