@@ -158,13 +158,12 @@ user_nsp.on('connection', (socket) => {
               payload['chunkPROGRESS'] = data.payload['PROG'];
               payload['chunkTIME'] = data.payload['TELAPSED'];
 
-          request.post({
-            url:'https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
-            form: payload
-          },
-            function(err, httpResponse, body){
-              admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: httpResponse});
-           });
+          request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
+          function(err, httpResponse, body){
+            if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: err});
+            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: httpResponse});
+            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: body});
+          });
 
           user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
           admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data.payload});
