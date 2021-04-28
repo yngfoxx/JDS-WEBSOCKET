@@ -148,25 +148,25 @@ user_nsp.on('connection', (socket) => {
     if (data.hasOwnProperty('type')) {
       switch (data.type) {
         case 'realtime_download_progress':
-          let payload = {'rtDownloadProg': true};
-              payload['chunkID'] = data.payload['ID'];
-              payload['jointID'] = data.payload['JID'];
-              payload['userID'] = data.payload['UID'];
-              payload['userNAME'] = data.payload['UNAME'];
-              payload['requestID'] = data.payload['RID'];
-              payload['chunkSIZE'] = data.payload['SIZE'];
-              payload['chunkPROGRESS'] = data.payload['PROG'];
-              payload['chunkTIME'] = data.payload['TELAPSED'];
+          let pLoad = {'rtDownloadProg': true};
+              pLoad['chunkID'] = data.payload['ID'];
+              pLoad['jointID'] = data.payload['JID'];
+              pLoad['userID'] = data.payload['UID'];
+              pLoad['userNAME'] = data.payload['UNAME'];
+              pLoad['requestID'] = data.payload['RID'];
+              pLoad['chunkSIZE'] = data.payload['SIZE'];
+              pLoad['chunkPROGRESS'] = data.payload['PROG'];
+              pLoad['chunkTIME'] = data.payload['TELAPSED'];
 
-          request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
+          request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php?',
           function(err, httpResponse, body){
             if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "ERROR => "+err});
-            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+httpResponse});
+            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+JSON.stringify(httpResponse)});
             admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "BODY => "+body});
           });
 
-          user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
-          admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data.payload});
+          user_channel.emit(uData.channel, pLoad); // send message direct to the namespace
+          admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: pLoad});
           break;
 
         default:
