@@ -157,8 +157,9 @@ user_nsp.on('connection', (socket) => {
               pLoad['requestID'] = data.payload['RID'];
               pLoad['chunkSIZE'] = data.payload['SIZE'];
               pLoad['chunkPROGRESS'] = data.payload['PROG'];
-              pLoad['chunkTIME'] = data.payload['TELAPSED'];
+              // pLoad['chunkTIME'] = data.payload['TELAPSED'];
 
+          // Serialize object
           let urlParm = "?";
           for (var key in pLoad) {
             if (urlParm.length > 1) urlParm += '&';
