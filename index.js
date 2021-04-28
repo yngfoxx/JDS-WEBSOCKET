@@ -5,6 +5,7 @@ const request = require('request');
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
+    methods: ["GET", "POST"]
   },
   serveClient: false,
   // below are engine.IO options
