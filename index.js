@@ -17,7 +17,7 @@ const io = require('socket.io')(server, {
 
 app.use(function(req, res, next) {
   // Website you wish to allow to connect
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8000');
+    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:8000 ');
 
     // Request methods you wish to allow
     res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
@@ -159,16 +159,12 @@ user_nsp.on('connection', (socket) => {
               payload['chunkTIME'] = data.payload['TELAPSED'];
 
           request.post({
-              url:'http://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
-              formData: payload
-            },
-            function optionalCallback(err, httpResponse, body) {
-              if (err) {
-                admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: 'upload failed: '+err});
-                return console.error('upload failed:', err);
-              }
-              admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: 'Upload successful!  Server responded with: '+body});
-          });
+            url:'https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
+            form: payload
+          },
+            function(err, httpResponse, body){
+              admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: httpResponse});
+           });
 
           user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
           admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data.payload});
