@@ -160,9 +160,9 @@ user_nsp.on('connection', (socket) => {
 
           request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
           function(err, httpResponse, body){
-            if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: err});
-            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: httpResponse});
-            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: body});
+            if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "ERROR => "+err});
+            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+httpResponse});
+            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "BODY => "+body});
           });
 
           user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
