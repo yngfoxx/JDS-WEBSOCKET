@@ -3,11 +3,20 @@
   <head>
     <style rel="stylesheet/less">
       html { background-color: #151515; color: white; }
+      .skt_pane_container {
+        display: flex;
+        position: absolute;
+        top: 0;
+        bottom: 11px;
+      }
       .skt_pane {
       	background-color: black;
       	padding: 8px;
       	border-radius: 7px;
         margin-bottom: 7px;
+        margin-right: 3px;
+        width: 100%;
+        height: 100%;
       }
       .skt_msg_pane {
       	list-style: none;
@@ -47,17 +56,19 @@
     <title>JDS EUROPE SERVER</title>
   </head>
   <body>
-    <div class="skt_pane" data-pane="su">
-      <div class="skt_mp_title">Admin socket activity</div>
-      <div class="skt_msg_pane _su_pane"></div>
-    </div>
-    <div class="skt_pane" data-pane="py-1247">
-      <div class="skt_mp_title">Python downloads</div>
-      <div class="skt_msg_pane _pyt_pane"></div>
-    </div>
-    <div class="skt_pane" data-pane="usr">
-      <div class="skt_mp_title">Users socket activity</div>
-      <div class="skt_msg_pane _usr_pane"></div>
+    <div class="skt_pane_container">
+      <div class="skt_pane" data-pane="su">
+        <div class="skt_mp_title">Admin socket activity</div>
+        <div class="skt_msg_pane _su_pane"></div>
+      </div>
+      <div class="skt_pane" data-pane="py-1247">
+        <div class="skt_mp_title">Python downloads</div>
+        <div class="skt_msg_pane _pyt_pane"></div>
+      </div>
+      <div class="skt_pane" data-pane="usr">
+        <div class="skt_mp_title">Users socket activity</div>
+        <div class="skt_msg_pane _usr_pane"></div>
+      </div>
     </div>
     <!-- <script src="/socket.io/socket.io.js"></script> -->
     <script>
