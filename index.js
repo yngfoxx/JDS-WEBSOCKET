@@ -149,7 +149,8 @@ user_nsp.on('connection', (socket) => {
       switch (data.type) {
         case 'realtime_download_progress':
           let pLoad = {'rtDownloadProg': true};
-              pLoad['chunkID'] = data.payload['ID'];
+              pLoad['chunkOID'] = data.payload['OID'];
+              pLoad['chunkCID'] = data.payload['CID'];
               pLoad['jointID'] = data.payload['JID'];
               pLoad['userID'] = data.payload['UID'];
               pLoad['userNAME'] = data.payload['UNAME'];
