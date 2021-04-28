@@ -151,6 +151,7 @@ user_nsp.on('connection', (socket) => {
           let pLoad = {'rtDownloadProg': true};
               pLoad['chunkOID'] = data.payload['OID'];
               pLoad['chunkCID'] = data.payload['CID'];
+              pLoad['chunkJID'] = data.payload['JID'];
               pLoad['userID'] = data.payload['UID'];
               pLoad['chunkSIZE'] = data.payload['SIZE'];
               pLoad['chunkPROGRESS'] = data.payload['PROG'];
@@ -168,8 +169,21 @@ user_nsp.on('connection', (socket) => {
           request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php'+urlParm,
           function(err, httpResponse, body){
             if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "ERROR => "+err});
-            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+JSON.stringify(httpResponse)});
-            admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "BODY => "+body});
+
+            if (body) {
+              try {
+                let reqPayLoad = JSON.parse(body);
+                if (reqPayLoad.hasOwnProperty('channel')) {
+                  let pyChannel = '/py_'+reqPayLoad['channel'];
+                  python_server_nsp.to(pyChannel).emit('msg', pLoad); // send message direct to the namespace
+                }
+              } catch (e) {
+
+              }
+            }
+            // admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+JSON.stringify(httpResponse)});
+            // admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "BODY => "+body});
+
           });
 
           user_channel.emit(uData.channel, pLoad); // send message direct to the namespace
