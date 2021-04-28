@@ -1,6 +1,7 @@
 const app = require('express')()
 const server = require('http').createServer(app)
 const port = process.env.PORT || 8000;
+const request = require('request');
 const io = require('socket.io')(server, {
   cors: {
     origin: '*',
@@ -12,11 +13,13 @@ const io = require('socket.io')(server, {
   cookie: false
 });
 
+
 app.use(function(req, res, next) {
   res.header("Access-Control-Allow-Origin", "*");
   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
   next();
 });
+
 
 app.get('/', (req, res) => { // SERVER OUTPUT
    res.sendFile(__dirname + '/index.html');
@@ -43,7 +46,7 @@ const cookie = require('cookie');
 
 
 
-// ADMIN SOCKET NAMESPACE/CHANNELS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\/
+// ADMIN SOCKET NAMESPACE/CHANNELS >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>\/
 admin_server_nsp.use((socket, next) => { // Authenticate admin channel
   let handshake = socket.handshake;
   if (sukey.includes(handshake.auth.token)) return next(); // check authenticity of key
@@ -68,7 +71,8 @@ admin_server_nsp.on('connection', (socket) => {
     admin_server_nsp.emit('msg', {socket_type: 'admin', socket_data: `ADMIN [${socket.id}] DISCONNECTED`}); // send message direct to the admin namespace
   });
 });
-// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>/\
+// >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>/\
+
 
 
 
@@ -131,6 +135,28 @@ user_nsp.on('connection', (socket) => {
     if (data.hasOwnProperty('type')) {
       switch (data.type) {
         case 'realtime_download_progress':
+          let payload = {'rtDownloadProg': true};
+              payload['chunkID'] = data.payload['ID'];
+              payload['jointID'] = data.payload['JID'];
+              payload['userID'] = data.payload['UID'];
+              payload['userNAME'] = data.payload['UNAME'];
+              payload['requestID'] = data.payload['RID'];
+              payload['chunkSIZE'] = data.payload['SIZE'];
+              payload['chunkPROGRESS'] = data.payload['PROG'];
+              payload['chunkTIME'] = data.payload['TELAPSED'];
+
+          request.post({
+              url:'http://5538533d1d0f.ngrok.io/JDS/req/req_handler.php',
+              formData: payload
+            },
+            function optionalCallback(err, httpResponse, body) {
+              if (err) {
+                admin_server_nsp.emit('msg', 'upload failed: '+err);
+                return console.error('upload failed:', err);
+              }
+              admin_server_nsp.emit('msg', 'Upload successful!  Server responded with: '+body);
+          });
+
           user_channel.emit(uData.channel, data.payload); // send message direct to the namespace
           admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: data.payload});
           break;
@@ -145,24 +171,6 @@ user_nsp.on('connection', (socket) => {
   // -------------------------------------------------------------------------->
 });
 // >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>/\
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
