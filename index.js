@@ -182,7 +182,8 @@ user_nsp.on('connection', (socket) => {
                   python_server_nsp.to(pyChannel).emit('msg', pLoad); // send message direct to the namespace
                 }
               } catch (e) {
-
+                // ERROR
+                admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "ERROR => "+e});
               }
             }
             // admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "RESPONSE => "+JSON.stringify(httpResponse)});
