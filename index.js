@@ -169,7 +169,8 @@ user_nsp.on('connection', (socket) => {
 
           admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "URL => "+urlParm});
 
-          request('https://5538533d1d0f.ngrok.io/JDS/req/req_handler.php'+urlParm,
+          // UPDATE DOMAIN HERE TO GET DOWNLOAD PROGRESS AND SIZE
+          request('https://11272b98f115.ngrok.io/JDS/req/req_handler.php'+urlParm,
           function(err, httpResponse, body){
             if (err) admin_server_nsp.emit('msg', {socket_type: 'user', socket_data: "ERROR => "+err});
 
